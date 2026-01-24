@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IP Range Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+    h1 {
+      color: #38bdf8;
+    }
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(56,189,248,0.15);
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      width: 100%;
+    }
+    button {
+      background: #38bdf8;
+      color: #020617;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0ea5e9;
+    }
+    pre {
+      background: #020617;
+      padding: 15px;
+      border-radius: 10px;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>IP Range Calculator</h1>
+
+  <div class="card">
+    <p><b>Input Format Example:</b></p>
+    <p><code>10.10.0-255.101-125</code></p>
+    <input id="ipInput" placeholder="Enter IP range" />
+    <button onclick="calculateRange()">Calculate</button>
+  </div>
+
+  <div class="card" id="result" style="display:none;"></div>
+
+  <div class="card" id="list" style="display:none;">
+    <button onclick="toggleIPs()">View Possible IPs</button>
+    <pre id="ipList" style="display:none;"></pre>
+  </div>
+
+  <div class="footer">
+    Made By Aryan Giri
+  </div>
+
+  <script>
+    function calculateRange() {
+      const input = document.getElementById('ipInput').value.trim();
+      const resultDiv = document.getElementById('result');
+      const listDiv = document.getElementById('list');
+      const ipList = document.getElementById('ipList');
+
+      resultDiv.style.display = 'none';
+      listDiv.style.display = 'none';
+      ipList.style.display = 'none';
+
+      try {
+        const parts = input.split('.');
+        if (parts.length !== 4) throw 'Invalid format';
+
+        let ranges = parts.map(p => {
+          if (p.includes('-')) {
+            let [start, end] = p.split('-').map(Number);
+            if (start < 0 || end > 255 || start > end) throw 'Invalid range';
+            return { start, end };
+          } else {
+            let num = Number(p);
+            if (num < 0 || num > 255) throw 'Invalid number';
+            return { start: num, end: num };
+          }
+        });
+
+        let total = 1;
+        ranges.forEach(r => total *= (r.end - r.start + 1));
+
+        let explanation = `📘 Explanation:\n\n`;
+        explanation += `IPv4 address has 4 octets (0–255 each).\n\n`;
+        ranges.forEach((r, i) => {
+          explanation += `Octet ${i+1}: ${r.start} to ${r.end} → ${r.end - r.start + 1} possibilities\n`;
+        });
+        explanation += `\nTotal IPs = multiplication of all octet ranges\n`;
+        explanation += `= ${total} IP addresses\n`;
+
+        resultDiv.innerHTML = `<pre>${explanation}</pre>`;
+        resultDiv.style.display = 'block';
+
+        let ips = [];
+        for (let a = ranges[0].start; a <= ranges[0].end; a++)
+          for (let b = ranges[1].start; b <= ranges[1].end; b++)
+            for (let c = ranges[2].start; c <= ranges[2].end; c++)
+              for (let d = ranges[3].start; d <= ranges[3].end; d++)
+                ips.push(`${a}.${b}.${c}.${d}`);
+
+        ipList.textContent = ips.join('\n');
+        listDiv.style.display = 'block';
+
+      } catch (e) {
+        resultDiv.innerHTML = `<pre>❌ Error: Invalid input format</pre>`;
+        resultDiv.style.display = 'block';
+      }
+    }
+
+    function toggleIPs() {
+      const ipList = document.getElementById('ipList');
+      ipList.style.display = ipList.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+
+</body>
+</html>
