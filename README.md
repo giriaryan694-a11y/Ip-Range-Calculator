@@ -1,6 +1,6 @@
 # IP Range Calculator (Learn While Calculating)
 
-🔗 **Live Tool:** [https://giriaryan694-a11y.github.io/ip-subnet-calculator/](https://giriaryan694-a11y.github.io/ip-subnet-calculator/)
+🔗 **Live Tool:** [https://giriaryan694-a11y.github.io/Ip-Range-Calculator/](https://giriaryan694-a11y.github.io/Ip-Range-Calculator/)
 
 This webpage helps you **understand and calculate IPv4 address ranges** using simple math and clear explanations. It is designed for learners, pentesters, and networking beginners who want to *see* how IP ranges actually work instead of memorizing formulas.
 
